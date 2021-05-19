@@ -31,7 +31,7 @@ public class AuthController {
 
   @PostMapping("/sign-in")
   public ResponseData<HashMap<String, String>> handleSignIn(@Valid @RequestBody SignInDto signInDto) {
-    HashMap<String, String> map = authService.handleSignIn(signInDto);
-    return new ResponseData<HashMap<String, String>>(HttpStatus.OK, "로그인 성공", map);
+    HashMap<String, String> tokenMap = authService.handleSignIn(signInDto);
+    return new ResponseData<HashMap<String, String>>(HttpStatus.OK, "로그인 성공", tokenMap);
   }
 }

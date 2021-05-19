@@ -6,6 +6,7 @@ import com.example.demo.domain.dto.user.SignInDto;
 import com.example.demo.domain.dto.user.SignUpDto;
 import com.example.demo.domain.entity.User;
 import com.example.demo.domain.repository.UserRepository;
+import com.example.demo.lib.Jwt;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private Jwt jwt;
 
   @Autowired
   private ModelMapper modelMapper;
@@ -35,9 +39,10 @@ public class AuthServiceImpl implements AuthService {
   public HashMap<String, String> handleSignIn(SignInDto signInDto) {
     User existUser = userRepository.findById(signInDto.getId());
 
-    HashMap<String, String> token = new HashMap<String, String>();
+    HashMap<String, String> tokenMap = new HashMap<String, String>();
+    String token = jwt.createToken(existUser);
 
-    token.put("id", existUser.getId());
-    return token;
+    tokenMap.put("x-access-token", token);
+    return tokenMap;
   }
 }
