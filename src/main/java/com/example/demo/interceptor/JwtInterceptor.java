@@ -3,7 +3,7 @@ package com.example.demo.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.example.demo.handler.UnAuthorizationException;
+import com.example.demo.exception.UnAuthorizationException;
 import com.example.demo.lib.Constants;
 import com.example.demo.lib.Jwt;
 
