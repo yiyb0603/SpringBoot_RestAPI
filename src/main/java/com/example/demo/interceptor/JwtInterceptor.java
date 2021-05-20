@@ -3,6 +3,7 @@ package com.example.demo.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.example.demo.domain.entity.User;
 import com.example.demo.exception.UnAuthorizationException;
 import com.example.demo.lib.Constants;
 import com.example.demo.lib.Jwt;
@@ -21,6 +22,8 @@ public class JwtInterceptor implements HandlerInterceptor {
     String token = request.getHeader(Constants.HEADER_NAME);
 
     if (token != null && jwt.isAccessToken(token)) {
+      User user = jwt.verifyToken(token);
+      request.setAttribute("user", user);
       return true;
     } else {
       throw new UnAuthorizationException();

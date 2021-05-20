@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.demo.domain.dto.post.PostDto;
 import com.example.demo.domain.entity.Post;
+import com.example.demo.domain.entity.User;
 import com.example.demo.domain.repository.PostRepository;
 import com.example.demo.exception.CustomException;
 
@@ -25,7 +26,7 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public List<Post> handleGetPosts(int page, int limit) {
-    Pageable pageable = PageRequest.of(page, limit);
+    Pageable pageable = PageRequest.of(page - 1, limit);
     Page<Post> posts = postRepository.findAll(pageable);
 
     return posts.getContent();
@@ -44,16 +45,21 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public void handleModifyPost(int idx, PostDto postDto) {
+  public void handleModifyPost(int idx, PostDto postDto, User user) {
     Post existPost = getExistPost(idx);
-    modelMapper.map(postDto, existPost);
 
+    checkEqualUser(existPost.getUser(), user);
+
+    modelMapper.map(postDto, existPost);
     postRepository.save(existPost);
   }
 
   @Override
-  public void handleDeletePost(int idx) {
+  public void handleDeletePost(int idx, User user) {
     Post existPost = getExistPost(idx);
+
+    checkEqualUser(existPost.getUser(), user);
+
     postRepository.delete(existPost);
   }
 
@@ -65,5 +71,11 @@ public class PostServiceImpl implements PostService {
     }
 
     return existPost;
+  }
+
+  public void checkEqualUser(User postUser, User requestUser) {
+    if (!(postUser.getId().equals(requestUser.getId()))) {
+      throw new CustomException(HttpStatus.FORBIDDEN, "수정할 권한이 없습니다.");
+    }
   }
 }

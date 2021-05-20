@@ -15,6 +15,7 @@ import io.jsonwebtoken.io.IOException;
 public class GlobalExceptionHandler {
   @ExceptionHandler(NullPointerException.class)
   public ResponseData<Response> handleNullPointerException(NullPointerException e) {
+    e.printStackTrace();
     return new ResponseData<Response>(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류입니다.");
   }
 

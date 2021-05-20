@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.dto.post.PostDto;
 import com.example.demo.domain.entity.Post;
+import com.example.demo.domain.entity.User;
 import com.example.demo.lib.response.Response;
 import com.example.demo.lib.response.ResponseData;
 import com.example.demo.service.post.PostService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -47,14 +49,19 @@ public class PostController {
   }
 
   @PutMapping("{idx}")
-  public ResponseData<Response> handleModifyPost(@PathVariable("idx") int idx, @Valid @RequestBody PostDto postDto) {
-    postService.handleModifyPost(idx, postDto);
+  public ResponseData<Response> handleModifyPost(HttpServletRequest request, @PathVariable("idx") int idx,
+      @Valid @RequestBody PostDto postDto) {
+    User user = (User) request.getAttribute("user");
+
+    postService.handleModifyPost(idx, postDto, user);
     return new ResponseData<Response>(HttpStatus.OK, "글 수정 성공");
   }
 
   @DeleteMapping("{idx}")
-  public ResponseData<Response> handleDeletePost(@PathVariable("idx") int idx) {
-    postService.handleDeletePost(idx);
+  public ResponseData<Response> handleDeletePost(HttpServletRequest request, @PathVariable("idx") int idx) {
+    User user = (User) request.getAttribute("user");
+
+    postService.handleDeletePost(idx, user);
     return new ResponseData<Response>(HttpStatus.OK, "글 삭제 성공");
   }
 }

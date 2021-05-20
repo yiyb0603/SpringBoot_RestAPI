@@ -2,15 +2,21 @@ package com.example.demo.domain.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Getter;
@@ -31,6 +37,11 @@ public class Post {
 
   @Column(nullable = false, columnDefinition = "TEXT")
   private String content;
+
+  @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+  @JoinColumn(name = "fk_user_id")
+  @OnDelete(action = OnDeleteAction.CASCADE)
+  private User user;
 
   @CreationTimestamp()
   @Column(name = "created_at", nullable = false)

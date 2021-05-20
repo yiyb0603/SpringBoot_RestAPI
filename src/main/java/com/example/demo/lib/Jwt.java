@@ -8,11 +8,15 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 import com.example.demo.domain.entity.User;
+import com.example.demo.domain.repository.UserRepository;
 import com.example.demo.exception.CustomException;
+import com.example.demo.exception.UnAuthorizationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -22,6 +26,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class Jwt {
   @Value("${jwt.secret.key}")
   private String jwtSecretKey;
+
+  @Autowired
+  private UserRepository userRepository;
 
   private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -64,5 +71,17 @@ public class Jwt {
 
     String jwtString = builder.compact();
     return jwtString;
+  }
+
+  public User verifyToken(String token) {
+    Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretKey)).parseClaimsJws(token)
+        .getBody();
+    User user = userRepository.findById(String.valueOf(claims.get("id")));
+
+    if (user == null) {
+      throw new UnAuthorizationException();
+    }
+
+    return user;
   }
 }
