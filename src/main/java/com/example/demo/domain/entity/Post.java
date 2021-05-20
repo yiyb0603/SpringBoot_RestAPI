@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -37,5 +38,6 @@ public class Post {
 
   @UpdateTimestamp()
   @Column(name = "updated_at", nullable = true)
+  @ColumnDefault("null")
   private LocalDateTime updatedAt = null;
 }

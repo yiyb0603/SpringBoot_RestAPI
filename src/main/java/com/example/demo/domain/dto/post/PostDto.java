@@ -1,4 +1,4 @@
-package com.example.demo.domain.dto.user;
+package com.example.demo.domain.dto.post;
 
 import javax.validation.constraints.NotBlank;
 
@@ -9,10 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SignInDto {
+public class PostDto {
   @NotBlank
-  private String id;
+  private String title;
 
   @NotBlank
-  private String password;
+  private String content;
 }

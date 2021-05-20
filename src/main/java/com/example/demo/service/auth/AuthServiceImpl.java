@@ -6,10 +6,13 @@ import com.example.demo.domain.dto.user.SignInDto;
 import com.example.demo.domain.dto.user.SignUpDto;
 import com.example.demo.domain.entity.User;
 import com.example.demo.domain.repository.UserRepository;
+import com.example.demo.exception.CustomException;
+import com.example.demo.lib.Constants;
 import com.example.demo.lib.Jwt;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,8 +30,8 @@ public class AuthServiceImpl implements AuthService {
   public void handleSignUp(SignUpDto signUpDto) {
     User existUser = userRepository.findById(signUpDto.getId());
 
-    if (existUser == null) {
-      // 중복 에러 처리
+    if (existUser != null) {
+      throw new CustomException(HttpStatus.CONFLICT, "존재하는 아이디");
     }
 
     User user = modelMapper.map(signUpDto, User.class);
@@ -37,12 +40,16 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public HashMap<String, String> handleSignIn(SignInDto signInDto) {
-    User existUser = userRepository.findById(signInDto.getId());
+    User existUser = userRepository.findByIdAndPassword(signInDto.getId(), signInDto.getPassword());
+
+    if (existUser == null) {
+      throw new CustomException(HttpStatus.UNAUTHORIZED, "올바르지 않은 아이디 또는 비밀번호");
+    }
 
     HashMap<String, String> tokenMap = new HashMap<String, String>();
     String token = jwt.createToken(existUser);
 
-    tokenMap.put("x-access-token", token);
+    tokenMap.put(Constants.HEADER_NAME, token);
     return tokenMap;
   }
 }
