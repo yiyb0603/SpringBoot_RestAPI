@@ -15,5 +15,4 @@ public class Response {
     this.status = status;
     this.message = message;
   }
-
 }
