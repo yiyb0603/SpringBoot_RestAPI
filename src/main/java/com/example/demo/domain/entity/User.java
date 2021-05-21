@@ -1,6 +1,6 @@
 package com.example.demo.domain.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,12 +10,10 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table(name = "user")
 @Getter
-@Setter
 public class User {
   @Id
   @Column(nullable = false)
@@ -31,6 +29,6 @@ public class User {
   private String email;
 
   @CreationTimestamp
-  @Column(name = "created_at", nullable = false)
-  private LocalDateTime createdAt;
+  @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
+  private Date createdAt;
 }

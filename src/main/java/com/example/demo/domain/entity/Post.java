@@ -1,8 +1,7 @@
 package com.example.demo.domain.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,12 +19,10 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Table(name = "post")
 @Getter
-@Setter
 public class Post {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,11 +41,11 @@ public class Post {
   private User user;
 
   @CreationTimestamp()
-  @Column(name = "created_at", nullable = false)
-  private LocalDateTime createdAt;
+  @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
+  private Date createdAt;
 
   @UpdateTimestamp()
-  @Column(name = "updated_at", nullable = true)
+  @Column(name = "updated_at", nullable = true, columnDefinition = "TIMESTAMP DEFAULT NULL")
   @ColumnDefault("null")
-  private LocalDateTime updatedAt = null;
+  private Date updatedAt = null;
 }

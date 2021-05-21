@@ -34,7 +34,7 @@ public class Jwt {
 
   public boolean isAccessToken(String jwtToken) {
     try {
-      Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretKey)).parseClaimsJws(jwtToken).getBody();
+      getClaims(jwtToken);
       return true;
     } catch (ExpiredJwtException e) {
       throw new CustomException(HttpStatus.GONE, "토큰이 만료되었습니다.");
@@ -73,9 +73,15 @@ public class Jwt {
     return jwtString;
   }
 
-  public User verifyToken(String token) {
-    Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretKey)).parseClaimsJws(token)
-        .getBody();
+  private Claims getClaims(String jwtToken) {
+    Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecretKey))
+        .parseClaimsJws(jwtToken).getBody();
+
+    return claims;
+  }
+
+  public User verifyToken(String jwtToken) {
+    Claims claims = getClaims(jwtToken);
     User user = userRepository.findById(String.valueOf(claims.get("id")));
 
     if (user == null) {
