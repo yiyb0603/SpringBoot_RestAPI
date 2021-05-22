@@ -1,11 +1,17 @@
 package com.example.demo.domain.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -20,6 +26,7 @@ public class User {
   private String id;
 
   @Column(nullable = false)
+  @JsonIgnore
   private String password;
 
   @Column(nullable = false)
@@ -31,4 +38,9 @@ public class User {
   @CreationTimestamp
   @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
   private Date createdAt;
+
+  @OneToMany(targetEntity = Post.class, fetch = FetchType.EAGER)
+  @JoinColumn(name = "fk_user_id")
+  @JsonIgnore
+  private List<Post> posts;
 }
